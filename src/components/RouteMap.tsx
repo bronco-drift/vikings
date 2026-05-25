@@ -84,21 +84,29 @@ export function RouteMap() {
   }
 
   return (
-    <div className="w-full p-2 bg-nes-bg" style={{ imageRendering: 'pixelated' }}>
-      <div className="flex justify-between items-center mb-1.5">
-        <div className="press-start text-[8px] text-nes-yellow tracking-[0.18em]">
+    <div
+      className="w-full h-full flex flex-col p-1.5 sm:p-2 bg-nes-bg min-h-0"
+      style={{ imageRendering: 'pixelated' }}
+    >
+      <div className="flex justify-between items-center mb-1 sm:mb-1.5 flex-shrink-0">
+        <div className="press-start text-[8px] text-nes-yellow tracking-[0.16em]">
           ◆ MAPA DEL MUNDO
         </div>
         <div className="press-start text-[7px] text-nes-ink tracking-wider">
-          {seenSet.size} / {Object.keys(POSITIONS).length} DESCUBIERTAS
+          {seenSet.size} / {Object.keys(POSITIONS).length}
         </div>
       </div>
       <svg
         viewBox="0 0 820 600"
         xmlns="http://www.w3.org/2000/svg"
         shapeRendering="crispEdges"
-        className="block w-full h-auto bg-nes-bg-2"
-        style={{ imageRendering: 'pixelated', border: '4px solid var(--color-nes-white)' }}
+        preserveAspectRatio="xMidYMid meet"
+        className="block w-full bg-nes-bg-2 flex-1 min-h-0"
+        style={{
+          imageRendering: 'pixelated',
+          border: '4px solid var(--color-nes-white)',
+          maxHeight: '100%',
+        }}
       >
         <defs>
           <pattern id="seatile" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
@@ -275,7 +283,8 @@ export function RouteMap() {
         })}
       </svg>
 
-      <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-1 press-start text-[7px] text-nes-ink">
+      {/* Legend: oculta en mobile (la idea es maximizar el mapa) */}
+      <div className="hidden md:grid mt-2 grid-cols-3 gap-x-3 gap-y-1 press-start text-[7px] text-nes-ink flex-shrink-0">
         <span><span className="text-nes-yellow">■</span> ACTUAL</span>
         <span><span className="text-nes-white">■</span> VISITADO</span>
         <span><span className="text-nes-ink">?</span> NIEBLA</span>

@@ -17,8 +17,9 @@ export function DebugPanel() {
   const scene = SCENES[currentScene]
 
   return (
-    <aside className="flex flex-col h-full bg-nes-bg-2 border-l-4 border-nes-white min-h-0 press-start">
-      <header className="px-3 py-3 border-b-4 border-nes-white bg-nes-bg flex items-center justify-between flex-shrink-0">
+    <aside className="flex flex-col h-full bg-nes-bg-2 md:border-l-4 border-nes-white min-h-0 press-start">
+      {/* Header compacto: en mobile sólo se ve en tabs distintos a "map" */}
+      <header className="hidden md:flex px-3 py-2 border-b-4 border-nes-white bg-nes-bg items-center justify-between flex-shrink-0">
         <h2 className="text-[10px] text-nes-yellow tracking-[0.2em]">
           ◆ UNDER THE HOOD
         </h2>
@@ -37,7 +38,7 @@ export function DebugPanel() {
             key={t}
             onClick={() => setTab(t)}
             className={`
-              flex-1 py-2 px-1
+              flex-1 py-1.5 sm:py-2 px-1
               ${tab === t
                 ? 'bg-nes-white text-nes-bg'
                 : 'bg-nes-bg-2 text-nes-ink hover:bg-nes-bg hover:text-nes-white'}
@@ -56,7 +57,11 @@ export function DebugPanel() {
         ))}
       </nav>
 
-      <div className="flex-1 overflow-y-auto text-[9px] leading-[1.7]">
+      <div
+        className={`flex-1 text-[9px] leading-[1.7] min-h-0 ${
+          tab === 'map' ? 'overflow-hidden' : 'overflow-y-auto'
+        }`}
+      >
         {tab === 'map' && <RouteMap />}
 
         <div className="p-3">
@@ -144,7 +149,8 @@ export function DebugPanel() {
         </div>
       </div>
 
-      <footer className="flex-shrink-0 px-3 py-2 border-t-4 border-nes-white bg-nes-bg text-[8px] text-nes-ink leading-[1.6]">
+      {/* Footer: oculto en mobile (la info ya está en el status bar del Stage) */}
+      <footer className="hidden md:flex flex-shrink-0 px-3 py-2 border-t-4 border-nes-white bg-nes-bg text-[8px] text-nes-ink leading-[1.6]">
         REP <span className="text-nes-yellow">{rep >= 0 ? `+${rep}` : rep}</span>
         {' · '}
         <span className="text-nes-white">{nombre.toUpperCase()}</span>
