@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useGame } from '../game/store'
 import { SCENES, getSceneYear } from '../game/scenes'
 
+// Labels cortas (max ~8 chars) para que entren en nodos de 58px de ancho
 const LABELS: Record<string, string> = {
   primer_pregunta: 'Uppsala',
   noruega: 'Noruega',
@@ -12,26 +13,26 @@ const LABELS: Record<string, string> = {
   pelea_o_regresa: 'Vencido',
   en_inglaterra: 'Wessex',
   en_francia: 'París',
-  bizancio: 'Bizancio',
+  bizancio: 'Bizanc.',
   volga: 'Atil',
   kiev: 'Holmgard',
   bagdad: 'Bagdad',
   vida_humilde: 'Granja',
   aliado_egberto: 'Aliado',
-  asesinar_egberto: 'Traición',
+  asesinar_egberto: 'Daga',
   asentamiento: 'Colonia',
-  leyenda_oriental: 'Varangos',
+  leyenda_oriental: 'Varan.',
   khagan_jazaro: 'Jázaros',
-  northumbria: 'Northumbria',
+  northumbria: 'North.',
   escandinavia: 'Norte',
   asesinar: 'Matanza',
   negociar: 'Pacto',
   vikingo_musulman: 'Yusuf',
   dinastia_rus: 'Rus',
-  rey_inglaterra: 'Rey Ing.',
+  rey_inglaterra: 'Rey Ing',
   rey_vikingo: 'Corona',
-  kategat: 'Kattegat',
-  muerte_digna: 'Valhalla',
+  kategat: 'Kategat',
+  muerte_digna: 'Valhal.',
   muerte_indigna: 'Hel',
   leyenda_vikinga: 'Leyenda',
   camino_del_skald: 'Skald',
@@ -41,37 +42,38 @@ const LABELS: Record<string, string> = {
 const label = (id: string) => LABELS[id] || id.replace(/_/g, ' ')
 
 /**
- * Timeline horizontal. Cada decisión es un nodo en una línea que crece
- * hacia la derecha. La cámara hace auto-scroll al final cuando aparece
- * un nuevo nodo.
+ * Timeline saga horizontal con wrap. Cada decisión es un nodo. Si la fila
+ * 1 se llena, salta a la fila 2 (y así sucesivamente — scroll vertical
+ * si se necesita).
  *
- *   750     751     753     754
- *    ●───────●───────●───────●
- *   Ups     Nor     Saq    Paris←
+ * Cada nodo es autocontenido:
+ *   AÑO
+ *    ●  ← dot (con línea-conectora-mitad a izquierda/derecha si
+ *         existe vecino en el grafo)
+ *   PLACE
+ *   ↓choice  ← o "◆AQUÍ" si es el actual
  */
 export function Timeline() {
   const history = useGame((s) => s.history)
   const currentScene = useGame((s) => s.currentScene)
   const scrollerRef = useRef<HTMLDivElement>(null)
 
-  // Auto-scroll al final (donde está el nodo más nuevo)
+  // Auto-scroll vertical al fondo cuando aparece un nodo nuevo
   useEffect(() => {
     const el = scrollerRef.current
-    if (el) el.scrollLeft = el.scrollWidth
+    if (el) el.scrollTop = el.scrollHeight
   }, [history.length])
 
   return (
     <div className="game-card h-full w-full relative overflow-hidden">
       <span className="game-card-title">TIMELINE</span>
-
-      {/* Header chico: año actual */}
       <div className="absolute top-1.5 right-2 z-10 press-start text-[8px] text-nes-yellow">
         AÑO {history.length > 0 ? getSceneYear(history[history.length - 1].sceneId) : 750}
       </div>
 
       <div
         ref={scrollerRef}
-        className="absolute inset-0 overflow-x-auto overflow-y-hidden px-1 pt-4 pb-2 scroll-smooth"
+        className="absolute inset-0 overflow-y-auto overflow-x-hidden px-1.5 pt-4 pb-2"
         style={{ scrollbarWidth: 'none' }}
       >
         {history.length === 0 ? (
@@ -79,19 +81,15 @@ export function Timeline() {
             Tu saga comienza ahora.
           </p>
         ) : (
-          <div className="relative flex items-center h-full pl-2 pr-6">
-            {/* Línea conectora horizontal de fondo */}
-            <div
-              className="absolute left-2 right-6 top-[34px] h-[2px] bg-nes-rune-border"
-              aria-hidden
-            />
-
+          <div className="grid grid-cols-6 gap-y-2 items-start auto-rows-[50px]">
             {history.map((h, i) => {
               const scene = SCENES[h.sceneId]
               const year = getSceneYear(h.sceneId)
               const isCurrent =
                 h.sceneId === currentScene && i === history.length - 1
               const isEnding = !!scene?.ending
+              const hasPrev = i > 0
+              const hasNext = i < history.length - 1
 
               const dotClass = isCurrent
                 ? 'bg-nes-yellow'
@@ -103,56 +101,60 @@ export function Timeline() {
                 : isEnding
                   ? 'text-nes-red'
                   : 'text-nes-white'
-              const yearClass = isCurrent
-                ? 'text-nes-yellow'
-                : 'text-nes-ink'
+              const yearClass = isCurrent ? 'text-nes-yellow' : 'text-nes-ink'
 
               return (
                 <motion.div
                   key={i}
-                  initial={i === history.length - 1 ? { opacity: 0, scale: 0.7 } : false}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, type: 'spring', stiffness: 220 }}
-                  className="relative flex flex-col items-center w-[68px] shrink-0"
+                  initial={i === history.length - 1 ? { opacity: 0 } : false}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex flex-col items-center w-full"
                 >
                   {/* Año */}
                   <span
-                    className={`press-start text-[8px] tabular-nums leading-none mb-1.5 ${yearClass}`}
+                    className={`press-start text-[7px] tabular-nums leading-none mb-1 ${yearClass}`}
                   >
                     {year}
                   </span>
 
-                  {/* Dot */}
-                  <span
-                    className={`relative z-10 block w-3.5 h-3.5 ${dotClass}`}
-                    style={{
-                      boxShadow: isCurrent ? '0 0 10px 1px #fcbc2c' : 'none',
-                    }}
-                  />
+                  {/* Línea horizontal + dot */}
+                  <div className="relative w-full h-3.5 flex items-center justify-center">
+                    {hasPrev && (
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[2px] w-1/2 bg-nes-rune-border" />
+                    )}
+                    {hasNext && (
+                      <span className="absolute right-0 top-1/2 -translate-y-1/2 h-[2px] w-1/2 bg-nes-rune-border" />
+                    )}
+                    <span
+                      className={`relative z-10 w-3 h-3 ${dotClass}`}
+                      style={{
+                        boxShadow: isCurrent ? '0 0 10px 1px #fcbc2c' : 'none',
+                      }}
+                    />
+                  </div>
 
-                  {/* Label */}
+                  {/* Place name */}
                   <span
-                    className={`mt-1.5 font-narration text-[13px] leading-tight text-center px-0.5 truncate w-full ${labelClass}`}
+                    className={`mt-1 font-narration text-[13px] leading-none text-center px-0.5 truncate w-full ${labelClass}`}
                   >
                     {label(h.sceneId)}
                   </span>
 
-                  {/* Choice — entre este nodo y el siguiente */}
-                  {h.choiceLabel && i < history.length - 1 && (
-                    <span
-                      className="absolute left-full top-[28px] -translate-y-1/2 press-start text-[6px] text-nes-blue-light whitespace-nowrap px-1 z-10"
-                      style={{ background: 'var(--color-nes-bg)' }}
-                    >
-                      →{h.choiceLabel}
-                    </span>
-                  )}
-
-                  {/* Indicador "estás aquí" en el actual */}
-                  {isCurrent && !isEnding && (
-                    <span className="absolute -bottom-1 press-start text-[6px] text-nes-yellow/80 whitespace-nowrap">
-                      ◆ AQUÍ
-                    </span>
-                  )}
+                  {/* Línea inferior: choice tomada O marcador "AQUÍ" O "FIN" */}
+                  <span className="mt-0.5 press-start text-[6px] leading-none truncate w-full text-center">
+                    {isEnding ? (
+                      <span className="text-nes-red">★ FIN</span>
+                    ) : isCurrent ? (
+                      <span className="text-nes-yellow">◆ AQUÍ</span>
+                    ) : h.choiceLabel ? (
+                      <span className="text-nes-blue-light">
+                        ↓ {h.choiceLabel.slice(0, 8)}
+                      </span>
+                    ) : (
+                      <span className="opacity-0">·</span>
+                    )}
+                  </span>
                 </motion.div>
               )
             })}
