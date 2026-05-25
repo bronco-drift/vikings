@@ -48,42 +48,49 @@ export function Stage() {
     <section className="relative flex flex-col h-full bg-nes-bg crt overflow-hidden">
       <StatusBar sceneId={scene.id} ending={scene.ending} />
 
-      {/* Caja superior: ilustración 8-bit */}
-      <div className="flex-1 flex items-center justify-center px-4 py-4 sm:py-6 min-h-0">
-        <motion.div
-          key={scene.id + (isResultPhase ? '-art' : '-art-main')}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.25 }}
-          className="w-full max-w-md flex items-center justify-center"
-        >
-          <PixelScene name={scene.art || 'upsala'} ending={scene.ending} />
-        </motion.div>
-      </div>
+      {/* "TV" — contenedor centrado con tamaño consistente entre escenas.
+         Las dimensiones internas (sprite/diálogo/choices) usan min-h para
+         que no se "mueva" cuando cambia el contenido. */}
+      <div className="flex-1 min-h-0 overflow-y-auto px-3 sm:px-6 py-3 sm:py-5">
+        <div className="mx-auto w-full max-w-xl flex flex-col gap-3 sm:gap-4">
 
-      {/* Caja inferior: diálogo + opciones */}
-      <div className="flex-shrink-0 px-3 sm:px-6 pb-3 sm:pb-6 flex flex-col items-center gap-3 sm:gap-4">
-        <motion.div
-          key={scene.id + (isResultPhase ? '-text' : '-text-main')}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-          className="w-full max-w-2xl"
-        >
-          <NarrationBox
-            text={text}
-            tone={isResultPhase ? 'result' : isEnding ? 'ending' : 'narration'}
-          />
-        </motion.div>
+          {/* Ilustración — altura fija. Mismo cuadro para todas las escenas. */}
+          <div className="w-full flex justify-center">
+            <motion.div
+              key={scene.id + (isResultPhase ? '-art' : '-art-main')}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.25 }}
+              className="w-[160px] sm:w-[200px]"
+            >
+              <PixelScene name={scene.art || 'upsala'} ending={scene.ending} />
+            </motion.div>
+          </div>
 
-        <div className="w-full max-w-2xl flex justify-center min-h-[80px] items-start">
-          {isEnding ? (
-            <EndingActions onRestart={restart} />
-          ) : isResultPhase ? (
-            <ContinueButton onContinue={continueAfterResult} />
-          ) : (
-            <Choices choices={visibleChoices} onPick={choose} />
-          )}
+          {/* Caja de diálogo — min-height fija para estabilidad visual */}
+          <motion.div
+            key={scene.id + (isResultPhase ? '-text' : '-text-main')}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className="w-full"
+          >
+            <NarrationBox
+              text={text}
+              tone={isResultPhase ? 'result' : isEnding ? 'ending' : 'narration'}
+            />
+          </motion.div>
+
+          {/* Acciones — min-height fija. Choices/Continuar/Endgame caen acá. */}
+          <div className="w-full flex justify-center min-h-[110px] sm:min-h-[100px] items-start">
+            {isEnding ? (
+              <EndingActions onRestart={restart} />
+            ) : isResultPhase ? (
+              <ContinueButton onContinue={continueAfterResult} />
+            ) : (
+              <Choices choices={visibleChoices} onPick={choose} />
+            )}
+          </div>
         </div>
       </div>
     </section>
@@ -132,21 +139,24 @@ function NarrationBox({
   text: string
   tone: 'narration' | 'result' | 'ending'
 }) {
-  const speed = tone === 'ending' ? 28 : 18
+  const speed = tone === 'ending' ? 22 : 14
   const { shown, done, skip } = useTypewriter(text, speed)
   return (
     <div
       onClick={() => !done && skip()}
       className={`
-        nes-dialog px-4 sm:px-6 py-4 sm:py-5
+        nes-dialog px-4 sm:px-5 py-3 sm:py-4
+        min-h-[140px] sm:min-h-[160px]
         ${!done ? 'cursor-pointer' : ''}
       `}
     >
       <p
         className={`
-          press-start leading-[1.85] text-[11px] sm:text-[13px]
-          ${tone === 'ending' ? 'text-nes-yellow' : ''}
-          ${tone === 'result' ? 'text-nes-blue-light' : ''}
+          font-narration leading-[1.25]
+          ${tone === 'ending'
+            ? 'press-start text-[12px] sm:text-[14px] leading-[1.8] text-nes-yellow'
+            : 'text-[20px] sm:text-[22px]'}
+          ${tone === 'result' ? 'text-nes-blue-light italic' : ''}
           ${tone === 'narration' ? 'text-nes-white' : ''}
         `}
       >

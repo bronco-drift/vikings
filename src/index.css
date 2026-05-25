@@ -21,6 +21,9 @@
   --font-press-start: "Press Start 2P", "Courier New", monospace;
   --font-sans: "Press Start 2P", "Courier New", monospace;
   --font-mono: "Press Start 2P", "Courier New", monospace;
+  /* VT323 — pixel font legible para narración. Press Start 2P queda
+     reservado para chrome (status bar, botones, títulos). */
+  --font-narration: "VT323", "Courier New", monospace;
 }
 
 /* ============================================================
@@ -67,6 +70,12 @@
     font-family: var(--font-press-start);
     font-weight: 400;
     letter-spacing: 0;
+  }
+  .font-narration {
+    font-family: var(--font-narration);
+    /* VT323 es angosta — un toque de tracking ayuda */
+    letter-spacing: 0.02em;
+    font-feature-settings: "kern" 0;
   }
 
   /* Caja de diálogo NES — bordes "stepped" típicos de Zelda / FF1.
