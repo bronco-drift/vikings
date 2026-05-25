@@ -38,4 +38,6 @@ export type Scene = {
   ending?: SceneEnding
   /** Región narrativa — determina la música contextual. */
   region?: SceneRegion
+  /** Año aproximado del evento. Se muestra en el timeline. */
+  year?: number
 }

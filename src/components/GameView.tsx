@@ -1,5 +1,5 @@
 import { StatusBar } from './StatusBar'
-import { MapBox } from './MapBox'
+import { Timeline } from './Timeline'
 import { Tv } from './Tv'
 import { DialogBox } from './DialogBox'
 import { InputBox } from './InputBox'
@@ -37,7 +37,7 @@ export function GameView() {
         "
       >
         <StatusBar />
-        <MapBox />
+        <Timeline />
         <Tv />
         <DialogBox />
         <InputBox />

@@ -690,3 +690,49 @@ export const CANONICAL_ENDINGS = [
   'vikingo_musulman',
   'muerte_indigna',
 ] as const
+
+/**
+ * Año aproximado de cada evento (EC). Pega con la cronología histórica:
+ * el Califato Abasí cae sobre los Omeyas en 750, Birka es fundada por
+ * los Yngling en ~750, Pipino el Breve corona en 751, etc.
+ * Los finales se ubican entre 760-815 según cuánto vive el héroe.
+ */
+export const SCENE_YEAR: Record<string, number> = {
+  primer_pregunta:   750,
+  noruega:           751,
+  suecia:            751,
+  pelea_o_regresa:   752,
+  ruta_oriental:     753,
+  francia_inglaterra:753,
+  en_francia:        754,
+  en_inglaterra:     754,
+  bizancio:          754,
+  volga:             754,
+  kiev:              754,
+  bagdad:            755,
+  aliado_egberto:    755,
+  asesinar_egberto:  755,
+  asentamiento:      756,
+  asesinar:          756,
+  negociar:          757,
+  escandinavia:      757,
+  northumbria:       758,
+  kategat:           759,
+  rey_vikingo:       760,
+  camino_del_skald:  755,
+  // Finales
+  muerte_digna:      762,
+  muerte_indigna:    760,
+  rey_inglaterra:    762,
+  vikingo_musulman:  770,
+  vida_humilde:      815,
+  leyenda_vikinga:   780,
+  leyenda_oriental:  800,
+  dinastia_rus:      810,
+  khagan_jazaro:     785,
+  el_skald:          800,
+}
+
+export function getSceneYear(id: string): number {
+  return SCENE_YEAR[id] ?? 750
+}
