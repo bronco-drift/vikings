@@ -15,7 +15,8 @@ export function StatusBar() {
   if (!scene) return null
 
   return (
-    <header className="flex items-center justify-between gap-2 px-2 py-2 sm:px-3 sm:py-3 bg-nes-bg-2 border-b-4 border-nes-white press-start text-[9px] sm:text-[10px] flex-shrink-0">
+    <header className="game-card relative flex items-center justify-between gap-2 px-2 sm:px-3 h-full press-start text-[9px] sm:text-[10px]">
+      <span className="game-card-title">VIKINGOS.TXT</span>
       <div className="text-nes-yellow truncate flex items-center gap-1">
         <span>★</span>
         <span className="truncate">{(nombre || 'Anónimo').toUpperCase()}</span>

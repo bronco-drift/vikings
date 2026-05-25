@@ -100,6 +100,31 @@
       inset -4px -4px 0 var(--color-nes-bg);
   }
 
+  /* Card genérica para los slots del HUD mobile — bordes nítidos pixel-art
+     con sombra dura debajo (sensación NES handheld). */
+  .game-card {
+    background: var(--color-nes-bg);
+    border: 3px solid var(--color-nes-white);
+    box-shadow:
+      0 3px 0 0 var(--color-rune-border),
+      inset 0 0 0 1px var(--color-nes-bg);
+    position: relative;
+    image-rendering: pixelated;
+  }
+  .game-card-title {
+    position: absolute;
+    top: -8px;
+    left: 8px;
+    padding: 0 6px;
+    background: var(--color-nes-bg);
+    color: var(--color-nes-yellow);
+    font-family: var(--font-press-start);
+    font-size: 7px;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    z-index: 2;
+  }
+
   /* "Pantalla" estilo CRT/NES — bezel oscuro + edge plateado +
      scanlines internas + vignette. Para sostener los sprites del juego. */
   .pixel-screen {

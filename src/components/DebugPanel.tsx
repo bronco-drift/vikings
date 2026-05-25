@@ -17,7 +17,7 @@ export function DebugPanel() {
   const scene = SCENES[currentScene]
 
   return (
-    <aside className="flex flex-col h-full bg-nes-bg-2 md:border-l-4 border-nes-white min-h-0 press-start">
+    <aside className="flex flex-col h-full bg-nes-bg-2 min-h-0 press-start">
       {/* Header compacto: en mobile sólo se ve en tabs distintos a "map" */}
       <header className="hidden md:flex px-3 py-2 border-b-4 border-nes-white bg-nes-bg items-center justify-between flex-shrink-0">
         <h2 className="text-[10px] text-nes-yellow tracking-[0.2em]">

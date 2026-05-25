@@ -1,61 +1,81 @@
-import { Stage } from './Stage'
-import { DebugPanel } from './DebugPanel'
 import { StatusBar } from './StatusBar'
+import { MapBox } from './MapBox'
+import { Tv } from './Tv'
+import { DialogBox } from './DialogBox'
+import { InputBox } from './InputBox'
+import { DebugPanel } from './DebugPanel'
 
 /**
  * Layout final.
  *
- * MOBILE (orden vertical):
- *   1. StatusBar (full-width)
- *   2. Tabs + Mapa (~60% ancho, centrado, alto compacto)
- *   3. Pantalla CRT (flex-1 — toma el espacio que sobra)
- *   4. Caja de texto (alto fijo, scroll interno)
- *   5. Choices ancladas al fondo
+ * MOBILE — HUD de 5 cajas FIJAS, una debajo de la otra. Cada caja
+ * tiene tamaño en vh (escala con el viewport) pero NO cambia con el
+ * contenido de la escena. La posición de cada elemento queda anclada.
  *
- * DESKTOP (md+):
- *   - Row 1: StatusBar (spans 2 cols)
- *   - Row 2 col 1: Stage  |  Row 2 col 2: DebugPanel
+ *   1. STATUS BAR    7vh
+ *   2. MAPA         20vh
+ *   3. TV (CRT)     26vh
+ *   4. TEXTO        20vh
+ *   5. INPUT        15vh
+ *   ─────────────────────
+ *   total          88vh + gaps + padding ≈ 100vh
+ *
+ * DESKTOP (md+) — 2 columnas: izquierda con TV/Texto/Input apilados,
+ * derecha con DebugPanel (que tiene tabs MAPA/RUTA/JSON/STATE/SALTAR).
  */
 export function GameView() {
   return (
-    <div
-      className="
-        h-full w-full
-        grid grid-rows-[auto_auto_1fr]
-        md:grid-cols-[1fr_360px] lg:grid-cols-[1fr_420px]
-        md:grid-rows-[auto_1fr]
-        bg-nes-bg
-      "
-    >
-      {/* 1. StatusBar — full width siempre */}
-      <div className="md:col-span-2">
-        <StatusBar />
-      </div>
-
-      {/* 2. Tabs + Mapa
-         Mobile: row 2, ~60% ancho centrado, altura compacta
-         Desktop: row 2 col 2, full height del row */}
+    <>
+      {/* ============ MOBILE ============ */}
       <div
         className="
-          md:row-start-2 md:col-start-2
-          md:h-full md:w-auto md:max-h-none md:max-w-none md:mx-0 md:border-t-0 md:border-l-4
-          w-[62%] mx-auto h-[23vh] min-h-[170px] max-h-[210px]
-          overflow-hidden
-          border-b-4 border-nes-white
+          md:hidden
+          h-full w-full
+          grid grid-rows-[7vh_20vh_26vh_20vh_15vh]
+          gap-2 p-2
+          bg-nes-bg crt
         "
       >
-        <DebugPanel />
+        <StatusBar />
+        <MapBox />
+        <Tv />
+        <DialogBox />
+        <InputBox />
       </div>
 
-      {/* 3. Stage (lo demás) — flex en mobile, col 1 row 2 en desktop */}
-      <main
+      {/* ============ DESKTOP ============ */}
+      <div
         className="
-          md:row-start-2 md:col-start-1
-          min-h-0 overflow-hidden
+          hidden md:grid
+          h-full w-full
+          grid-rows-[64px_1fr] grid-cols-[1fr_400px] lg:grid-cols-[1fr_440px]
+          gap-3 p-3
+          bg-nes-bg crt
         "
       >
-        <Stage />
-      </main>
-    </div>
+        <div className="col-span-2">
+          <StatusBar />
+        </div>
+
+        {/* Col izquierda: TV + Texto + Input apilados */}
+        <div className="col-start-1 row-start-2 flex flex-col gap-3 min-h-0">
+          <div className="flex-[1.4] min-h-0">
+            <Tv />
+          </div>
+          <div className="flex-1 min-h-0">
+            <DialogBox />
+          </div>
+          <div className="flex-shrink-0 h-[140px]">
+            <InputBox />
+          </div>
+        </div>
+
+        {/* Col derecha: DebugPanel completo (tabs incluidas) */}
+        <div className="col-start-2 row-start-2 game-card overflow-hidden relative">
+          <span className="game-card-title">CONSOLA</span>
+          <DebugPanel />
+        </div>
+      </div>
+    </>
   )
 }

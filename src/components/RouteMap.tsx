@@ -61,7 +61,9 @@ const EDGES: Edge[] = (() => {
   return out
 })()
 
-export function RouteMap() {
+type Props = { compact?: boolean }
+
+export function RouteMap({ compact = false }: Props = {}) {
   const currentScene = useGame((s) => s.currentScene)
   const history = useGame((s) => s.history)
   const scenesEverSeen = useGame((s) => s.scenesEverSeen)
@@ -85,17 +87,26 @@ export function RouteMap() {
 
   return (
     <div
-      className="w-full h-full flex flex-col p-1.5 sm:p-2 bg-nes-bg min-h-0"
+      className={`w-full h-full flex flex-col bg-nes-bg min-h-0 ${
+        compact ? 'p-1' : 'p-1.5 sm:p-2'
+      }`}
       style={{ imageRendering: 'pixelated' }}
     >
-      <div className="flex justify-between items-center mb-1 sm:mb-1.5 flex-shrink-0">
-        <div className="press-start text-[8px] text-nes-yellow tracking-[0.16em]">
-          ◆ MAPA DEL MUNDO
+      {!compact && (
+        <div className="flex justify-between items-center mb-1 sm:mb-1.5 flex-shrink-0">
+          <div className="press-start text-[8px] text-nes-yellow tracking-[0.16em]">
+            ◆ MAPA DEL MUNDO
+          </div>
+          <div className="press-start text-[7px] text-nes-ink tracking-wider">
+            {seenSet.size} / {Object.keys(POSITIONS).length}
+          </div>
         </div>
-        <div className="press-start text-[7px] text-nes-ink tracking-wider">
-          {seenSet.size} / {Object.keys(POSITIONS).length}
+      )}
+      {compact && (
+        <div className="absolute top-1 right-2 press-start text-[7px] text-nes-ink tracking-wider z-20">
+          {seenSet.size}/{Object.keys(POSITIONS).length}
         </div>
-      </div>
+      )}
       <svg
         viewBox="0 0 820 600"
         xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +115,7 @@ export function RouteMap() {
         className="block w-full bg-nes-bg-2 flex-1 min-h-0"
         style={{
           imageRendering: 'pixelated',
-          border: '4px solid var(--color-nes-white)',
+          border: compact ? 'none' : '4px solid var(--color-nes-white)',
           maxHeight: '100%',
         }}
       >

@@ -32,7 +32,7 @@ export function Choices({ choices, onPick, disabled }: Props) {
       role="menu"
       tabIndex={0}
       onKeyDown={onKey}
-      className="nes-dialog p-3 sm:p-4 w-full max-w-xl outline-none"
+      className="w-full max-w-xl outline-none flex flex-col gap-1"
     >
       {choices.map((c, i) => {
         const isFocus = i === focus
@@ -46,7 +46,7 @@ export function Choices({ choices, onPick, disabled }: Props) {
               onClick={() => onPick(c)}
               className={`
                 press-start w-full text-left
-                py-2 px-3 text-xs sm:text-sm
+                py-1.5 sm:py-2 px-2 sm:px-3 text-[10px] sm:text-sm
                 transition-none
                 ${
                   isFocus
