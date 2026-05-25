@@ -209,11 +209,11 @@ export function PixelScene({ name }: Props) {
   const sprite = SPRITES[name] || SPRITES.upsala
   const rows = sprite.length
   const cols = sprite[0]?.length || 1
-  const px = 12 // tamaño lógico del pixel — el SVG escala via CSS
+  const px = 12
 
   return (
     <div
-      className="nes-dialog-raised p-3 sm:p-4"
+      className="w-full h-full flex items-center justify-center"
       style={{
         background: PALETTE['.'],
         imageRendering: 'pixelated',
@@ -223,7 +223,8 @@ export function PixelScene({ name }: Props) {
         viewBox={`0 0 ${cols * px} ${rows * px}`}
         xmlns="http://www.w3.org/2000/svg"
         shapeRendering="crispEdges"
-        className="block w-full h-auto"
+        preserveAspectRatio="xMidYMid meet"
+        className="block max-w-full max-h-full w-auto h-auto"
         style={{ imageRendering: 'pixelated' }}
       >
         {sprite.flatMap((row, y) =>
