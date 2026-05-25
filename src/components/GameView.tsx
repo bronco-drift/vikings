@@ -31,7 +31,7 @@ export function GameView() {
         className="
           md:hidden
           h-full w-full
-          grid grid-rows-[7vh_20vh_26vh_20vh_15vh]
+          grid grid-rows-[7vh_14vh_30vh_22vh_18vh]
           gap-2 p-2
           bg-nes-bg crt
         "
